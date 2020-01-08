@@ -1,0 +1,12 @@
+sudo: required #using docker
+services:
+    - docker #automatically install docker into running container
+
+before_install: #executes commands before 
+    - docker build -t shukla_ankur/docker-react -f Dockerfile.dev .
+    
+script: #contains commands that run when our test suite needs to be executed
+    - docker run -t ankur-shukla/docker-react npm run test -- --coverage
+    #-- --covegare will run coverage test which exists. Or else 
+    #npm run test hungs for input, which is what we don't wan with 
+    # automated CI
