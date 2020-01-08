@@ -6,7 +6,21 @@ before_install: #executes commands before
     - docker build -t shukla_ankur/docker-react -f Dockerfile.dev .
     
 script: #contains commands that run when our test suite needs to be executed
-    - docker run -t ankur-shukla/docker-react npm run test -- --coverage
+    - docker run -t shukla_ankur/docker-react npm run test -- --coverage
     #-- --covegare will run coverage test which exists. Or else 
     #npm run test hungs for input, which is what we don't wan with 
     # automated CI
+deploy:
+    provider: elasticbeanstalk #use this set of instructions to deploy
+    region: "us-east-2"
+    app: "docker-react"
+    env: "DockerReact-env"
+    bucket_name: "elasticbeanstalk-us-east-2-478561203801"    #when travis deploys code-base, it'll zip all them, and copy 
+    #to a c3 bucket. Once this is done, EBS is poked to redeploy app
+    #this is s3 bucket
+    bucket_path: "docker-react" #keep this as app name. After first deployment, EBS will create this bucket
+    on:
+        branch: master #deploy only when code pushed to master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+        secure : "$AWS_SECRET_KEY"
